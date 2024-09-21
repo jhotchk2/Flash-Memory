@@ -1,13 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            background-color: lightgray;
+        }
+        h1, h2 {
+            color: lightblue;
+            background-color: black;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+            width: 100%;
+        }
+        h2 {
+            background-color: grey;
+            color: bisque;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            margin-right: 10px;
+            width: 100px;
+            text-align: right;
+        }
+        .form-group input {
+            padding: 5px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container input {
+            display: inline-block;
+            margin: 0 10px; /* Adds space between the buttons */
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Flash Memory</h1>
+    <h2>Alert: You need to put your information</h2>
+
+    <div class="form-container">
+        <div class="form-group">
+            <input type="file" id="file">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password">
+        </div>
+    </div>
+
+    <div class="button-container">
+        <input type="button" value="Submit">
+
+    </div>
+
+</body>
 </html>
