@@ -9,20 +9,23 @@ const PORT = 8080
 app.use(express.json())
 app.use(cors())
 
-app.get('/test', (req, res) => {
-  res.send('hello world')
+app.post('/test', (req, res) => {
+  const name = req.body
+  console.log(name)
 })
 
 app.post('/encrypt', (req, res) => {
-  // const ciphertext = encrypt()
-  // fs.writeFile('/Volumes/Untitled/test.txt', ciphertext, err => {
-  //   if (err) {
-  //     console.error(err);
-  //   } else {
-  //     console.log('file created!')
-  //   }
-  // });
-  console.log(req.body)
+  const plaintext = req.body.plaintext
+  const key = req.body.key
+  const filename = req.body.filename
+  const ciphertext = encrypt(plaintext, key)
+  fs.writeFile(`/Volumes/Untitled/${filename}`, ciphertext, err => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('file created!')
+    }
+  });
 })
 
 app.listen(PORT, () => {

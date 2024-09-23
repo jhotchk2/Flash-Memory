@@ -8,18 +8,16 @@
     <style>
         body {
             background-color: lightgray;
+            margin: 0;
+            padding: 0;
         }
-        h1, h2 {
+        h1 {
             color: lightblue;
             background-color: black;
             text-align: center;
             margin: 0;
-            padding: 10px;
+            padding: 10px 0;
             width: 100%;
-        }
-        h2 {
-            background-color: grey;
-            color: bisque;
         }
         .form-container {
             display: flex;
@@ -55,11 +53,10 @@
 <body>
 
     <h1>Flash Memory</h1>
-    <h2>Alert: You need to put your information</h2>
 
     <div class="form-container">
         <div class="form-group">
-            <input type="file" id="file">
+            <input type="file" id="fileInput">
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
@@ -68,9 +65,39 @@
     </div>
 
     <div class="button-container">
-        <input type="button" value="Submit">
-
+        <input type="button" value="Submit" onclick="handleClick()">
     </div>
+
+    <script>
+
+      let plaintext = ''
+      let password = ''
+      let filename = ''
+      
+      document.getElementById('fileInput').addEventListener('change', function selectedFileChanged() {
+        const reader = new FileReader()
+        reader.onload = function fileReadCompleted() {
+          plaintext = reader.result
+        }
+        reader.readAsText(this.files[0])
+        filename = this.files[0].name
+      })
+
+      document.getElementById('password').addEventListener('change', function selectedFileChanged() {
+        password = this.value
+      })
+
+      async function handleClick() {
+        const myHeaders = new Headers()
+        myHeaders.append("Content-Type", "application/json")
+        const result = await fetch("http://localhost:8080/encrypt", { 
+          method: "POST",
+          body: JSON.stringify({ plaintext: plaintext, key: password, filename: filename }),
+          headers: myHeaders,
+        })
+      }
+
+    </script>
 
 </body>
 </html>
