@@ -16,6 +16,7 @@ app.post('/test', (req, res) => {
 app.post('/encrypt', async (req, res) => {
   const plaintext = req.body.plaintext
   const filename = req.body.filename
+  const option = req.body.option
   const keys = getKeys()
 
   const ciphertext = encrypt(plaintext, keys)
