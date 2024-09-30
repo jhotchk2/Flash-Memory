@@ -1,7 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import fs from 'fs'
-import { encrypt } from './encrypt.js'
+import os from 'os'
+import { encrypt, decrypt } from './encrypt.js'
 
 const app = express()
 const PORT = 8080
@@ -13,7 +14,7 @@ app.post('/test', (req, res) => {
   res.send('hello')
 })
 
-app.post('/encrypt', async (req, res) => {
+app.post('/encrypt', (req, res) => {
   const plaintext = req.body.plaintext
   const filename = req.body.filename
   const option = req.body.option
@@ -27,10 +28,25 @@ app.post('/encrypt', async (req, res) => {
       console.log('file created!')
     }
   })
+  res.status(201).send('File Encrypted')
 })
 
-app.get('/decrypt', (req, res) => {
-  
+app.post('/decrypt', (req, res) => {
+  const ciphertext = req.body.ciphertext
+  const filename = req.body.filename
+  const option = req.body.option
+  const keys = getKeys()
+  const homeDir = os.homedir()
+
+  const plaintext = decrypt(ciphertext, keys)
+  fs.writeFile(`${homeDir}/Desktop/${filename}`, plaintext, err => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('file created!')
+    }
+  })
+  res.status(201).send('File Decrypted')
 })
 
 app.listen(PORT, () => {

@@ -103,37 +103,57 @@
     </div>
 
     <script>
-      let plaintext = ''
+      let text = ''
       let filename = ''
       let select = ''
 
       document.getElementById('fileInput').addEventListener('change', function selectedFileChanged() {
         const reader = new FileReader()
         reader.onload = function fileReadCompleted() {
-          plaintext = reader.result
+          text = reader.result
         }
         reader.readAsText(this.files[0])
         filename = this.files[0].name
       })
 
-      function encryptClick() {
+      async function encryptClick() {
         const myHeaders = new Headers()
         myHeaders.append('Content-Type', 'application/json')
         select = document.getElementById('select').value
-        fetch('http://localhost:8080/encrypt', {
+        const response = await fetch('http://localhost:8080/encrypt', {
           method: 'POST',
           body: JSON.stringify({
-            plaintext: plaintext,
+            plaintext: text,
             filename: filename,
             option: select
           }),
           headers: myHeaders,
         })
-        document.getElementById("message").innerHTML = "File Created!"
+        if (response.ok) {
+          document.getElementById("message").innerHTML = "File Encrypted!"
+        } else {
+          document.getElementById("message").innerHTML = "Error Encrypting File"
+        }
       }
 
       async function decryptClick() {
-
+        const myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
+        select = document.getElementById('select').value
+        const response = await fetch('http://localhost:8080/decrypt', {
+          method: 'POST',
+          body: JSON.stringify({
+            ciphertext: text,
+            filename: filename,
+            option: select
+          }),
+          headers: myHeaders,
+        })
+        if (response.ok) {
+          document.getElementById("message").innerHTML = "File Decrypted!"
+        } else {
+          document.getElementById("message").innerHTML = "Error Decrypting File"
+        }
       }
     </script>
   </body>
