@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import fs from 'fs'
 import os from 'os'
-import { encrypt, decrypt } from './encrypt.js'
+import { encrypt as encryptPoly, decrypt as decryptPoly } from './polyalphabetic.js'
 
 const app = express()
 const PORT = 8080
@@ -18,14 +18,13 @@ app.post('/encrypt', (req, res) => {
   const plaintext = req.body.plaintext
   const filename = req.body.filename
   const option = req.body.option
-  const keys = getKeys()
 
-  const ciphertext = encrypt(plaintext, keys)
+  const ciphertext = encrypt(plaintext, option)
   fs.writeFile(`/Volumes/Untitled/${filename}`, ciphertext, err => {
     if (err) {
       console.error(err);
     } else {
-      console.log('file created!')
+      console.log('file encrypted!')
     }
   })
   res.status(201).send('File Encrypted')
@@ -35,15 +34,14 @@ app.post('/decrypt', (req, res) => {
   const ciphertext = req.body.ciphertext
   const filename = req.body.filename
   const option = req.body.option
-  const keys = getKeys()
   const homeDir = os.homedir()
 
-  const plaintext = decrypt(ciphertext, keys)
+  const plaintext = decrypt(ciphertext, option)
   fs.writeFile(`${homeDir}/Desktop/${filename}`, plaintext, err => {
     if (err) {
       console.error(err);
     } else {
-      console.log('file created!')
+      console.log('file decrypted!')
     }
   })
   res.status(201).send('File Decrypted')
@@ -71,4 +69,22 @@ function getKeys() {
   }
 
   return [key, ...ciphers]
+}
+
+function encrypt(plaintext, option) {
+  const keys = getKeys()
+
+  switch (option) {
+    case 'polyalphabetic-grid-cipher':
+      return encryptPoly(plaintext, keys)
+  }
+}
+
+function decrypt(plaintext, option) {
+  const keys = getKeys()
+
+  switch (option) {
+    case 'polyalphabetic-grid-cipher':
+      return decryptPoly(plaintext, keys)
+  }
 }
