@@ -18,15 +18,25 @@ app.post('/encrypt', (req, res) => {
   const plaintext = req.body.plaintext
   const filename = req.body.filename
   const option = req.body.option
+  const keys = getKeys()
+  const homeDir = os.homedir()
 
   const ciphertext = encrypt(plaintext, option)
   fs.writeFile(`/Volumes/Untitled/${filename}`, ciphertext, err => {
     if (err) {
       console.error(err);
     } else {
-      console.log('file encrypted!')
+      console.log('File Encrypted')
     }
   })
+  fs.unlink(`${homeDir}/Documents/${filename}`, (err) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('file deleted');
+    }
+  })
+
   res.status(201).send('File Encrypted')
 })
 
@@ -44,6 +54,14 @@ app.post('/decrypt', (req, res) => {
       console.log('file decrypted!')
     }
   })
+  fs.unlinkSync(`/Volumes/Untitled/${filename}`, (err) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('file deleted');
+    }
+  })
+
   res.status(201).send('File Decrypted')
 })
 
