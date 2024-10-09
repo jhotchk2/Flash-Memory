@@ -3,109 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-
-    <style>
-      body {
-        background-color: lightgray;
-        margin: 0;
-        padding: 0;
-        font-size: 18px;
-      }
-      h1 {
-        color: lightblue;
-        background-color: black;
-        text-align: center;
-        margin: 0;
-        padding: 10px 0;
-        width: 100%;
-      }
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-      }
-      .form-group {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .form-group label {
-        margin-right: 10px;
-        width: 100px;
-        text-align: right;
-      }
-      .form-group input {
-        padding: 5px;
-      }
-      .button-container {
-        text-align: center;
-        margin-top: 20px;
-      }
-      .button-container input {
-        display: inline-block;
-        margin: 0 10px;
-        padding: 10px;
-      }
-      .button-con {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 20px;
-      }
-      .select-container {
-        display: flex;
-        gap: 10px;
-      }
-      .select-container select {
-        padding: 2px;
-      }
-      input[type='button'] {
-        padding: 10px 20px;
-        background-color: white;
-        color: black;
-        border: 1px solid black;
-        cursor: pointer;
-        border-radius: 5px;
-      }
-    </style>
+    <title>Flash Memory</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>Flash Memory</h1>
 
     <div class="form-container">
-      <div class="form-group">
-        <label for="fileInput">Choose a file:</label>
-        <input type="file" id="fileInput" />
-      </div>
-
-      <div class="select-container">
-        <label for="select">Select:</label>
-        <select id="select" name="select">
-          <option value="select">Select</option>
-          <option value="polyalphabetic-grid-cipher">Polyalphabetic Grid Cipher</option>
-          <option value="asymmetric-encryption">Asymmetric Encryption</option>
-        </select>
+      <div class="input-container">
+        <div class="file-container">
+          <span>Select a File:</span>
+          <label for="fileInput" id="input-label">Choose file</label>
+          <input type="file" id="fileInput" />
+        </div>
+  
+        <div class="select-container">
+          <label for="select">Select:</label>
+          <select id="select" name="select">
+            <option value="select">Select</option>
+            <option value="polyalphabetic-grid-cipher">Polyalphabetic Grid Cipher</option>
+            <option value="asymmetric-encryption">Asymmetric Encryption</option>
+          </select>
+        </div>
       </div>
 
       <div class="button-con">
         <div class="encrypt_button">
-          <input type="button" value="Encrypt" onclick="encryptClick()" />
+          <button onclick="encryptClick()">Encrypt</button>
         </div>
 
         <div class="decrypt_button">
-          <input type="button" value="Decrypt" onclick="decryptClick()" />
+          <button onclick="decryptClick()">Decrypt</button>
         </div>
       </div>
       <p id="message"></p>
     </div>
 
     <script>
+      const message = document.getElementById("message")
+      const select = document.getElementById('select')
+      const fileLabel = document.getElementById('input-label')
       let text = ''
       let filename = ''
-      let select = ''
+      let selectValue = ''
 
       document.getElementById('fileInput').addEventListener('change', function selectedFileChanged() {
         const reader = new FileReader()
@@ -114,45 +54,50 @@
         }
         reader.readAsText(this.files[0])
         filename = this.files[0].name
+        fileLabel.innerHTML = filename
       })
 
       async function encryptClick() {
         const myHeaders = new Headers()
         myHeaders.append('Content-Type', 'application/json')
-        select = document.getElementById('select').value
+        selectValue = select.value
         const response = await fetch('http://localhost:8080/encrypt', {
           method: 'POST',
           body: JSON.stringify({
             plaintext: text,
             filename: filename,
-            option: select
+            option: selectValue
           }),
           headers: myHeaders,
         })
         if (response.ok) {
-          document.getElementById("message").innerHTML = "File Encrypted!"
+          message.innerHTML = "File Encrypted!"
+          message.classList.add("success")
         } else {
-          document.getElementById("message").innerHTML = "Error Encrypting File"
+          message.innerHTML = "Error Encrypting File"
+          message.classList.add("failed")
         }
       }
 
       async function decryptClick() {
         const myHeaders = new Headers()
         myHeaders.append('Content-Type', 'application/json')
-        select = document.getElementById('select').value
+        selectValue = select.value
         const response = await fetch('http://localhost:8080/decrypt', {
           method: 'POST',
           body: JSON.stringify({
             ciphertext: text,
             filename: filename,
-            option: select
+            option: selectValue
           }),
           headers: myHeaders,
         })
         if (response.ok) {
-          document.getElementById("message").innerHTML = "File Decrypted!"
+          message.innerHTML = "File Decrypted!"
+          message.classList.add("success")
         } else {
-          document.getElementById("message").innerHTML = "Error Decrypting File"
+          message.innerHTML = "Error Decrypting File"
+          message.classList.add("failed")
         }
       }
     </script>
