@@ -15,7 +15,6 @@ app.post('/encrypt', (req, res) => {
   const plaintext = req.body.plaintext
   const filename = req.body.filename
   const option = req.body.option
-  const keys = getKeys()
   const homeDir = os.homedir()
 
   const ciphertext = encrypt(plaintext, option)
@@ -51,7 +50,7 @@ app.post('/decrypt', (req, res) => {
       console.log('file decrypted!')
     }
   })
-  fs.unlinkSync(`/Volumes/Untitled/${filename}`, (err) => {
+  fs.unlink(`/Volumes/Untitled/${filename}`, (err) => {
     if (err) {
       console.log(err)
     } else {
@@ -97,13 +96,13 @@ function encrypt(plaintext, option) {
   }
 }
 
-function decrypt(plaintext, option) {
+function decrypt(ciphertext, option) {
   const keys = getKeys()
 
   switch (option) {
     case 'polyalphabetic-grid-cipher':
-      return decryptPoly(plaintext, keys)
+      return decryptPoly(ciphertext, keys)
     case 'aes':
-      return decryptAES(plaintext, keys)
+      return decryptAES(ciphertext, keys)
   }
 }
