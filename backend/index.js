@@ -3,16 +3,13 @@ import cors from 'cors'
 import fs from 'fs'
 import os from 'os'
 import { encrypt as encryptPoly, decrypt as decryptPoly } from './polyalphabetic.js'
+import { encryptAES, decryptAES } from './AES.js'
 
 const app = express()
 const PORT = 8080
 
 app.use(express.json())
 app.use(cors())
-
-app.post('/test', (req, res) => {
-  res.send('hello')
-})
 
 app.post('/encrypt', (req, res) => {
   const plaintext = req.body.plaintext
@@ -95,6 +92,8 @@ function encrypt(plaintext, option) {
   switch (option) {
     case 'polyalphabetic-grid-cipher':
       return encryptPoly(plaintext, keys)
+    case 'aes':
+      return encryptAES(plaintext, keys)
   }
 }
 
@@ -104,5 +103,7 @@ function decrypt(plaintext, option) {
   switch (option) {
     case 'polyalphabetic-grid-cipher':
       return decryptPoly(plaintext, keys)
+    case 'aes':
+      return decryptAES(plaintext, keys)
   }
 }
