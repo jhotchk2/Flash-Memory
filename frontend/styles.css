@@ -76,6 +76,7 @@ input[type="file"] {
   cursor: pointer;
   width: 141px;
   text-align: center;
+  cursor: pointer;
 }
 .input-container {
   width: max-content;
