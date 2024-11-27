@@ -4,6 +4,7 @@ import fs from 'fs'
 import os from 'os'
 import { encrypt as encryptPoly, decrypt as decryptPoly } from './polyalphabetic.js'
 import { encryptAES, decryptAES } from './AES.js'
+import { encryptRC4, decryptRC4 } from './RC4.js'
 
 const app = express()
 const PORT = 8080
@@ -93,6 +94,8 @@ function encrypt(plaintext, option) {
       return encryptPoly(plaintext, keys)
     case 'aes':
       return encryptAES(plaintext, keys)
+    case 'rc4':
+      return encryptRC4(ciphertext, keys)
   }
 }
 
@@ -104,5 +107,7 @@ function decrypt(ciphertext, option) {
       return decryptPoly(ciphertext, keys)
     case 'aes':
       return decryptAES(ciphertext, keys)
+    case 'rc4':
+      return decryptRC4(ciphertext, keys)
   }
 }
